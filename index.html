@@ -8,8 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-
-
 :root {
   --primary-color: #ffffff; /* Headings & bullet points in bright white */
   --primary-light: #ffffff; /* Hover/accent remains bright white */
@@ -201,14 +199,11 @@
       border: 1px solid var(--border);
     }
 
-
-	/* HOVER EFFECT */
-	 .experience-item:hover, .education-item:hover, .award-item:hover, .skills-category:hover {
+    /* HOVER EFFECT */
+    .experience-item:hover, .education-item:hover, .award-item:hover, .skills-category:hover {
       box-shadow: var(--shadow-md);
       border-color: var(--primary-color);
     }
-	
-	
 
     .experience-item:last-child, .education-item:last-child {
       margin-bottom: 0;
@@ -298,84 +293,245 @@
     }
 
     /* Chatbot Styles */
-    #chatbot-launcher {
+    #cv-cbLauncher {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-      color: var(--text-on-primary);
-      border: none;
+      right: max(16px, env(safe-area-inset-right));
+      bottom: max(16px, env(safe-area-inset-bottom));
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 24px;
-      cursor: move;
-      z-index: 9999;
-      box-shadow: var(--shadow-lg);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #chatbot-launcher:hover {
-      transform: scale(1.05);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-
-    #chatbot-launcher:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3), var(--shadow-lg);
-    }
-
-    #chatbot-modal {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 9998;
-      background: var(--surface);
-      box-shadow: var(--shadow-lg);
-      border-radius: 12px 12px 0 0;
-    }
-
-    #chatbot-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 12px 12px 0 0;
-    }
-
-    #chatbot-close {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: #ef4444;
-      color: var(--text-on-primary);
-      border: none;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      font-size: 18px;
-      z-index: 10000;
+      background: rgba(18, 18, 18, 0.96);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+      z-index: 2147483000;
       cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    #cv-cbLauncher:hover {
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 18px 36px rgba(0,0,0,0.42);
+      background: rgba(30, 30, 30, 0.98);
+    }
+
+    #cv-cbLauncher:focus-visible {
+      outline: 3px solid rgba(255,255,255,0.28);
+      outline-offset: 3px;
+    }
+
+    #cv-cbLauncher svg {
+      width: 27px;
+      height: 27px;
+      fill: #ffffff;
+      display: block;
+    }
+
+    #cv-cbOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 2147483001;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    #cv-cbWindow {
+      position: fixed;
+      z-index: 2147483002;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      width: min(420px, 92vw);
+      height: min(72vh, 720px);
+      right: max(16px, env(safe-area-inset-right));
+      bottom: max(84px, calc(env(safe-area-inset-bottom) + 84px));
+      background: rgba(18, 18, 18, 0.98);
+      color: var(--text-primary);
+      border-radius: 20px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.10);
+      overflow: hidden;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+
+    #cv-cbWindow[data-state="enter"] {
+      transform: translateY(8px);
+      opacity: 0;
+    }
+
+    #cv-cbWindow[data-state="open"] {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .cv-cb-hidden {
+      display: none !important;
+    }
+
+    #cv-cbHeader {
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      box-shadow: var(--shadow-sm);
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
-    #chatbot-close:hover {
-      background: #dc2626;
-      transform: scale(1.05);
+    #cv-cbTitle {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.01em;
     }
 
-    #chatbot-close:focus {
+    #cv-cbClose {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: #ffffff;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    #cv-cbClose:hover {
+      background: rgba(255,255,255,0.08);
+      transform: scale(1.03);
+    }
+
+    #cv-cbClose:focus-visible {
+      outline: 3px solid rgba(255,255,255,0.22);
+      outline-offset: 2px;
+    }
+
+    #cv-cbClose svg {
+      fill: currentColor;
+      display: block;
+    }
+
+    #cv-cbBody {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      min-height: 0;
+      background: rgba(18, 18, 18, 0.98);
+    }
+
+    #cv-cbMsgs {
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.18) transparent;
+    }
+
+    #cv-cbMsgs::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #cv-cbMsgs::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.16);
+      border-radius: 999px;
+    }
+
+    .cv-cb-bubble {
+      display: flex;
+      width: 100%;
+    }
+
+    .cv-cb-bubble .b {
+      max-width: 84%;
+      padding: 11px 13px;
+      border-radius: 16px;
+      font-size: 0.94rem;
+      line-height: 1.45;
+      word-break: break-word;
+      white-space: pre-wrap;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    }
+
+    .cv-cb-bubble.user {
+      justify-content: flex-end;
+    }
+
+    .cv-cb-bubble.user .b {
+      background: #ffffff;
+      color: #000000;
+      border-bottom-right-radius: 6px;
+    }
+
+    .cv-cb-bubble.assistant {
+      justify-content: flex-start;
+    }
+
+    .cv-cb-bubble.assistant .b {
+      background: rgba(255,255,255,0.08);
+      color: var(--text-primary);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-bottom-left-radius: 6px;
+    }
+
+    #cv-cbForm {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 14px 16px 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(18, 18, 18, 0.98);
+    }
+
+    #cv-cbInput {
+      min-width: 0;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: var(--text-primary);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
       outline: none;
-      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #cv-cbInput::placeholder {
+      color: rgba(230,230,230,0.58);
+    }
+
+    #cv-cbInput:focus {
+      border-color: rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.07);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.06);
+    }
+
+    #cv-cbSend {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: #ffffff;
+      color: #000000;
+      border-radius: 12px;
+      padding: 0 16px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    #cv-cbSend:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+    }
+
+    #cv-cbSend:disabled,
+    #cv-cbInput:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     /* Responsive Design */
@@ -404,29 +560,19 @@
       .experience-item, .education-item {
         padding: 1.25rem;
       }
+    }
 
-      #chatbot-modal {
-        border-radius: 0;
-      }
-
-      #chatbot-iframe {
+    @media (max-width: 640px), (max-height: 640px) {
+      #cv-cbWindow {
+        width: 100vw;
+        height: min(100vh, 100dvh);
+        right: 0;
+        bottom: 0;
         border-radius: 0;
       }
     }
 
     @media (min-width: 769px) {
-      #chatbot-modal {
-        width: 400px;
-        height: 600px;
-        bottom: 20px;
-        right: 20px;
-        border-radius: 12px;
-      }
-
-      #chatbot-iframe {
-        border-radius: 12px;
-      }
-
       .awards-grid {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -455,8 +601,9 @@
       }
 
       .language-selector-container,
-      #chatbot-launcher,
-      #chatbot-modal {
+      #cv-cbLauncher,
+      #cv-cbWindow,
+      #cv-cbOverlay {
         display: none !important;
       }
 
@@ -483,14 +630,14 @@
 
     /* Animation for content switching */
     .cv-section {
-      display: none;              /* hide non-active sections so they don't take space */
+      display: none;
       opacity: 0;
       transform: translateY(10px);
       transition: all 0.3s ease;
     }
 
     .cv-section.active {
-      display: block;             /* only the active language section participates in layout */
+      display: block;
       opacity: 1;
       transform: translateY(0);
     }
@@ -514,51 +661,47 @@
           <p>📞 +33 (0)6 62 72 83 22</p>
           <p>📧 <a href="mailto:juliabaucher.work@gmail.com">juliabaucher.work@gmail.com</a></p>
           <p>🔗 <a href="https://linkedin.com/in/juliabaucher" target="_blank">linkedin.com/in/juliabaucher</a></p>
-		  <p>🌐 <a href="https://juliabaucher.github.io/" target="_blank">juliabaucher.github.io</a></p>
-		  <p>🌍 Citizenship: French</p>
-		  
+          <p>🌐 <a href="https://juliabaucher.github.io/" target="_blank">juliabaucher.github.io</a></p>
+          <p>🌍 Citizenship: French</p>
         </div>
 
         <section>
           <h2>Work Experience</h2>
-          
+
           <div class="experience-item">
-			  
             <div class="job-title">Senior BI Product Manager Tech for Science & Tech — AMAZON, Luxembourg (2023–2025)</div>
             <ul>
-      			<li>Led the development of a machine learning model to forecast employee absences across the EU Middle Mile network: problem definition, data analysis, model performance evaluation, visualization, and presentation of results at the Amazon Science Summit.</li>
-				<li>Integrated machine learning and optimization models into production web applications to enable data-driven decision-making for business users.</li>
-				<li>Defined the GenAI product strategy and delivered a chatbot prototype to explain, interpret, and operationalize forecasting models for non-technical stakeholders.</li>
-				<li>Specified functional and technical requirements for AI agents, including prompt design (BPMN, case-based), input/output schemas, memory management, autonomy levels, auditability, and sentiment analysis.</li>
-				<li>Led the design and delivery of end-to-end GenAI products leveraging Retrieval-Augmented Generation (RAG), AWS services, and AWS Lambda, including an admin interface for dynamic knowledge-base management.</li>
-				<li>Drove the design and implementation of agentic GenAI systems using Amazon Q CLI and the Model Context Protocol (MCP), coordinating multiple AI agents integrated with Jira, Gmail, Outlook, MotherDuck, and n8n to automate end-to-end business workflows.</li>
-				<li>Owned the design of Infrastructure-as-Code solutions using AWS CDK, enabling scalable, serverless GenAI chatbots (AWS Lambda, API Gateway, IAM, Amazon Bedrock) with fully automated, reproducible, production-ready deployments.</li>
-			
+              <li>Led the development of a machine learning model to forecast employee absences across the EU Middle Mile network: problem definition, data analysis, model performance evaluation, visualization, and presentation of results at the Amazon Science Summit.</li>
+              <li>Integrated machine learning and optimization models into production web applications to enable data-driven decision-making for business users.</li>
+              <li>Defined the GenAI product strategy and delivered a chatbot prototype to explain, interpret, and operationalize forecasting models for non-technical stakeholders.</li>
+              <li>Specified functional and technical requirements for AI agents, including prompt design (BPMN, case-based), input/output schemas, memory management, autonomy levels, auditability, and sentiment analysis.</li>
+              <li>Led the design and delivery of end-to-end GenAI products leveraging Retrieval-Augmented Generation (RAG), AWS services, and AWS Lambda, including an admin interface for dynamic knowledge-base management.</li>
+              <li>Drove the design and implementation of agentic GenAI systems using Amazon Q CLI and the Model Context Protocol (MCP), coordinating multiple AI agents integrated with Jira, Gmail, Outlook, MotherDuck, and n8n to automate end-to-end business workflows.</li>
+              <li>Owned the design of Infrastructure-as-Code solutions using AWS CDK, enabling scalable, serverless GenAI chatbots (AWS Lambda, API Gateway, IAM, Amazon Bedrock) with fully automated, reproducible, production-ready deployments.</li>
             </ul>
           </div>
 
-       <div class="experience-item">
-			  
+          <div class="experience-item">
             <div class="job-title">Senior BI Product Manager Tech for Amazon Transportation Services — AMAZON, Luxembourg (2021–2023)</div>
             <ul>
-     			<li>Defined and owned the product vision, strategy, value proposition, and roadmap for Labor Planning and Associate Assignment web platforms within Amazon Transportation Services.</li>
-				<li>Delivered competitive analyses of labor planning tools that informed senior leadership decisions on tool selection and rollout across the EU.</li>
-				<li>Led cross functional product development from discovery to delivery, including requirements gathering, feature prioritization, user stories and acceptance criteria, user journey design, and technical architecture in close collaboration with engineering and UX teams.</li>
-				<li>Managed end to end product execution by facilitating Scrum ceremonies, managing testing and data migration, and leading go to market activities.</li>
-				<li>Managed a UX workshop for the Assosiate Assignement web application: defined personas and key users, conducted interviews, captured pain points, and translated insights into product improvements.</li>
-				<li>Launched the first real time BI solution in the EU Middle Mile, automating metric monitoring and integrating camera displays with global scanner event data, while aligning KPI definitions, making technical trade offs, and delivering an on site prototype with user feedback.</li>
-				<li>Coordinated the development of scalable data pipelines for Amazon Robotics sites to support performance monitoring and corrective action planning.</li>
-				<li>Led the design and delivery of BI dashboards to track lost packages and operational performance across the Middle Mile network.</li>
-				<li>Delivered feasibility analyses for deploying logistics optimization tools using alternative operating models.</li>
-				<li>Hired and mentored full time employees and interns, delivered Scrum training rated 4.8 out of 5, and organized internal technical events.</li>
-		      </ul>
+              <li>Defined and owned the product vision, strategy, value proposition, and roadmap for Labor Planning and Associate Assignment web platforms within Amazon Transportation Services.</li>
+              <li>Delivered competitive analyses of labor planning tools that informed senior leadership decisions on tool selection and rollout across the EU.</li>
+              <li>Led cross functional product development from discovery to delivery, including requirements gathering, feature prioritization, user stories and acceptance criteria, user journey design, and technical architecture in close collaboration with engineering and UX teams.</li>
+              <li>Managed end to end product execution by facilitating Scrum ceremonies, managing testing and data migration, and leading go to market activities.</li>
+              <li>Managed a UX workshop for the Assosiate Assignement web application: defined personas and key users, conducted interviews, captured pain points, and translated insights into product improvements.</li>
+              <li>Launched the first real time BI solution in the EU Middle Mile, automating metric monitoring and integrating camera displays with global scanner event data, while aligning KPI definitions, making technical trade offs, and delivering an on site prototype with user feedback.</li>
+              <li>Coordinated the development of scalable data pipelines for Amazon Robotics sites to support performance monitoring and corrective action planning.</li>
+              <li>Led the design and delivery of BI dashboards to track lost packages and operational performance across the Middle Mile network.</li>
+              <li>Delivered feasibility analyses for deploying logistics optimization tools using alternative operating models.</li>
+              <li>Hired and mentored full time employees and interns, delivered Scrum training rated 4.8 out of 5, and organized internal technical events.</li>
+            </ul>
           </div>
-			
+
           <div class="experience-item">
             <div class="job-title">Product Manager & Consultant for Revenue Accounting & Finance — Amadeus, France (2013–2020)</div>
             <ul>
               <li>Managed the lifecycle of enterprise accounting and audit software for global airline clients.</li>
-			  <li>Defined product strategy and aligned roadmap priorities with a consortium of enterprise customers.</li>
+              <li>Defined product strategy and aligned roadmap priorities with a consortium of enterprise customers.</li>
               <li>Run onsite consulting sessions to optimise system usage, business processes, overall user experience, monitored SLA KPI for Malaysia Airlines, Vistara, Icelandair, Luxair, Wideroe, South Africa.</li>
               <li>Conducted multiple pre-sales projects: RFP&RFI responses, workshops, live demo, value proposition.</li>
             </ul>
@@ -578,9 +721,7 @@
             <div class="job-title">Research Engineer — University of Cambridge, UK (2006)</div>
             <ul>
               <li>Developed of a mathematical model for a physical phenomenon in injection molding.</li>
-			  <li>Implemented of the model in industrial software (C/C++ Rem@3D, Transvalor)</li>
-
-				
+              <li>Implemented of the model in industrial software (C/C++ Rem@3D, Transvalor)</li>
             </ul>
           </div>
 
@@ -632,7 +773,7 @@
           </div>
           <div class="skills-category">
             <div class="skills-title">IT skills:</div>
-            <div class="skills-content">   LLM, RAG, Prompt Engineering, MCP, SageMaker, MLOPs, Python, SQL, ETL, Tableau, Quicksight, C/C++, Java, HTML, API XML, JSON, Postman, GitHub, CI/CD, data pipelines, WordPress, Jira; SAFe, Agile; Waterfall, CMMI; UX design, PCI DSS, GDPR.</div>
+            <div class="skills-content">LLM, RAG, Prompt Engineering, MCP, SageMaker, MLOPs, Python, SQL, ETL, Tableau, Quicksight, C/C++, Java, HTML, API XML, JSON, Postman, GitHub, CI/CD, data pipelines, WordPress, Jira; SAFe, Agile; Waterfall, CMMI; UX design, PCI DSS, GDPR.</div>
           </div>
           <div class="skills-category">
             <div class="skills-title">Languages:</div>
@@ -653,46 +794,42 @@
           <p>📞 +33 (0)6 62 72 83 22</p>
           <p>📧 <a href="mailto:juliabaucher.work@gmail.com">juliabaucher.work@gmail.com</a></p>
           <p>🔗 <a href="https://linkedin.com/in/juliabaucher" target="_blank">linkedin.com/in/juliabaucher</a></p>
-		  <p>🌐 <a href="https://juliabaucher.github.io/" target="_blank">juliabaucher.github.io</a></p>
+          <p>🌐 <a href="https://juliabaucher.github.io/" target="_blank">juliabaucher.github.io</a></p>
           <p>🌍 Nationalité : Française</p>
         </div>
 
         <section>
           <h2>Expérience Professionnelle</h2>
-          
-          <div class="experience-item">
-			  
-      
-	
-<div class="job-title">Responsable Produit IA & Machine Learning - Science & Tech — AMAZON, Luxembourg (2023–2025)</div>
-<ul>
-  <li>Pilotage du développement d’un modèle de machine learning pour la prévision des absences collaborateurs à l’échelle du réseau EU Middle Mile : définition du problème, analyse des données, évaluation des performances du modèle, création de visualisations et présentation des résultats lors de l’Amazon Science Summit.</li>
-  <li>Intégration de modèles de machine learning et d’optimisation dans des applications web en production afin de permettre une prise de décision data-driven pour les utilisateurs métiers.</li>
-  <li>Définition de la stratégie produit GenAI et livraison d’un prototype de chatbot pour expliquer, interpréter et opérationnaliser les modèles de prévision auprès de parties prenantes non techniques.</li>
-  <li>Spécification des exigences fonctionnelles et techniques pour des agents IA, incluant la conception des prompts (BPMN, raisonnement par cas), les schémas d’entrées/sorties, la gestion de la mémoire, les niveaux d’autonomie, l’auditabilité et l’analyse de sentiment.</li>
-  <li>Conception et livraison de produits GenAI de bout en bout s’appuyant sur le Retrieval-Augmented Generation (RAG), les services AWS et AWS Lambda, incluant une interface d’administration pour la gestion dynamique de la base de connaissances.</li>
-  <li>Pilotage de la conception et de l’implémentation de systèmes GenAI agentiques via Amazon Q CLI et le Model Context Protocol (MCP), coordonnant plusieurs agents IA intégrés à Jira, Gmail, Outlook, MotherDuck et n8n pour automatiser des workflows métiers de bout en bout.</li>
-  <li>Responsabilité de la conception de solutions d’Infrastructure as Code via AWS CDK, permettant le déploiement de chatbots GenAI serverless et scalables (AWS Lambda, API Gateway, IAM, Amazon Bedrock), avec des déploiements cloud entièrement automatisés, reproductibles et prêts pour la production.</li>
-</ul>
-</div>
-			
-<div class="experience-item">
 
-<div class="job-title">Responsable Produit BI – Amazon Transportation Services — AMAZON, Luxembourg (2021–2023)</div>
-<ul>
-  <li>Définition et pilotage de la vision produit, de la stratégie, de la proposition de valeur et de la roadmap des plateformes web de planification de la main-d’œuvre et d’affectation des collaborateurs au sein d’Amazon Transportation Services.</li>
-  <li>Réalisation d’analyses concurrentielles d’outils de planification des effectifs, servant de base aux décisions du top management concernant la sélection et le déploiement des solutions à l’échelle européenne.</li>
-  <li>Pilotage du développement produit cross-fonctionnel de la phase de discovery à la mise en production, incluant le recueil des besoins, la priorisation des fonctionnalités, la rédaction des user stories et critères d’acceptation, la conception des parcours utilisateurs et de l’architecture technique en étroite collaboration avec les équipes d’ingénierie et UX.</li>
-  <li>Gestion de l’exécution produit de bout en bout via l’animation des cérémonies Scrum, le pilotage des phases de test et de migration de données, ainsi que la conduite des activités de go-to-market.</li>
-  <li>Animation d’un atelier UX pour l’application web d’Associate Assignment : définition des personas et utilisateurs clés, conduite d’entretiens, identification des points de friction et traduction des enseignements en améliorations produit.</li>
-  <li>Lancement de la première solution BI temps réel dans le Middle Mile européen, automatisant le suivi des indicateurs et intégrant des flux vidéo caméras avec les données globales de scanners, tout en alignant les définitions de KPI, arbitrant les choix techniques et livrant un prototype sur site avec collecte de feedback utilisateurs.</li>
-  <li>Coordination du développement de pipelines de données scalables pour les sites Amazon Robotics afin de soutenir le pilotage de la performance et les plans d’actions correctives.</li>
-  <li>Conception et livraison de dashboards BI pour le suivi des colis perdus et de la performance opérationnelle du réseau Middle Mile.</li>
-  <li>Réalisation d’analyses de faisabilité pour le déploiement d’outils d’optimisation logistique selon des modèles opérationnels alternatifs.</li>
-  <li>Recrutement et accompagnement de collaborateurs permanents et de stagiaires, animation de formations Scrum notées 4,8/5 et organisation d’événements techniques internes.</li>
-</ul>
-</div>
-			
+          <div class="experience-item">
+            <div class="job-title">Responsable Produit IA & Machine Learning - Science & Tech — AMAZON, Luxembourg (2023–2025)</div>
+            <ul>
+              <li>Pilotage du développement d’un modèle de machine learning pour la prévision des absences collaborateurs à l’échelle du réseau EU Middle Mile : définition du problème, analyse des données, évaluation des performances du modèle, création de visualisations et présentation des résultats lors de l’Amazon Science Summit.</li>
+              <li>Intégration de modèles de machine learning et d’optimisation dans des applications web en production afin de permettre une prise de décision data-driven pour les utilisateurs métiers.</li>
+              <li>Définition de la stratégie produit GenAI et livraison d’un prototype de chatbot pour expliquer, interpréter et opérationnaliser les modèles de prévision auprès de parties prenantes non techniques.</li>
+              <li>Spécification des exigences fonctionnelles et techniques pour des agents IA, incluant la conception des prompts (BPMN, raisonnement par cas), les schémas d’entrées/sorties, la gestion de la mémoire, les niveaux d’autonomie, l’auditabilité et l’analyse de sentiment.</li>
+              <li>Conception et livraison de produits GenAI de bout en bout s’appuyant sur le Retrieval-Augmented Generation (RAG), les services AWS et AWS Lambda, incluant une interface d’administration pour la gestion dynamique de la base de connaissances.</li>
+              <li>Pilotage de la conception et de l’implémentation de systèmes GenAI agentiques via Amazon Q CLI et le Model Context Protocol (MCP), coordonnant plusieurs agents IA intégrés à Jira, Gmail, Outlook, MotherDuck et n8n pour automatiser des workflows métiers de bout en bout.</li>
+              <li>Responsabilité de la conception de solutions d’Infrastructure as Code via AWS CDK, permettant le déploiement de chatbots GenAI serverless et scalables (AWS Lambda, API Gateway, IAM, Amazon Bedrock), avec des déploiements cloud entièrement automatisés, reproductibles et prêts pour la production.</li>
+            </ul>
+          </div>
+
+          <div class="experience-item">
+            <div class="job-title">Responsable Produit BI – Amazon Transportation Services — AMAZON, Luxembourg (2021–2023)</div>
+            <ul>
+              <li>Définition et pilotage de la vision produit, de la stratégie, de la proposition de valeur et de la roadmap des plateformes web de planification de la main-d’œuvre et d’affectation des collaborateurs au sein d’Amazon Transportation Services.</li>
+              <li>Réalisation d’analyses concurrentielles d’outils de planification des effectifs, servant de base aux décisions du top management concernant la sélection et le déploiement des solutions à l’échelle européenne.</li>
+              <li>Pilotage du développement produit cross-fonctionnel de la phase de discovery à la mise en production, incluant le recueil des besoins, la priorisation des fonctionnalités, la rédaction des user stories et critères d’acceptation, la conception des parcours utilisateurs et de l’architecture technique en étroite collaboration avec les équipes d’ingénierie et UX.</li>
+              <li>Gestion de l’exécution produit de bout en bout via l’animation des cérémonies Scrum, le pilotage des phases de test et de migration de données, ainsi que la conduite des activités de go-to-market.</li>
+              <li>Animation d’un atelier UX pour l’application web d’Associate Assignment : définition des personas et utilisateurs clés, conduite d’entretiens, identification des points de friction et traduction des enseignements en améliorations produit.</li>
+              <li>Lancement de la première solution BI temps réel dans le Middle Mile européen, automatisant le suivi des indicateurs et intégrant des flux vidéo caméras avec les données globales de scanners, tout en alignant les définitions de KPI, arbitrant les choix techniques et livrant un prototype sur site avec collecte de feedback utilisateurs.</li>
+              <li>Coordination du développement de pipelines de données scalables pour les sites Amazon Robotics afin de soutenir le pilotage de la performance et les plans d’actions correctives.</li>
+              <li>Conception et livraison de dashboards BI pour le suivi des colis perdus et de la performance opérationnelle du réseau Middle Mile.</li>
+              <li>Réalisation d’analyses de faisabilité pour le déploiement d’outils d’optimisation logistique selon des modèles opérationnels alternatifs.</li>
+              <li>Recrutement et accompagnement de collaborateurs permanents et de stagiaires, animation de formations Scrum notées 4,8/5 et organisation d’événements techniques internes.</li>
+            </ul>
+          </div>
+
           <div class="experience-item">
             <div class="job-title">Responsable de Produit & Consultant — Amadeus, France (2013–2020)</div>
             <ul>
@@ -774,8 +911,6 @@
     </div>
   </div>
 
-
-
   <script>
     // Language preference persistence
     const getStoredLanguage = () => {
@@ -825,210 +960,202 @@
       switchLanguage(selectedLang);
       setStoredLanguage(selectedLang);
     });
-
-
   </script>
-  
-  
-  <!-- Chatbot Integration: non-intrusive, fixed-position, mobile/desktop-ready -->
-<style>
-  :root {
-    /* Tweak these to better match your site if needed */
-    --cb-accent: #3b82f6;            /* launcher ring & focus outline */
-    --cb-bg: #ffffff;
-    --cb-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    --cb-radius: 20px;
-    --cb-z: 2147483000;              /* very high to sit above other layers */
-  }
-  .cb-launcher, .cb-overlay, .cb-window { all: initial; font-family: inherit; }
-  .cb-hidden { display: none !important; }
 
-  /* Launcher button */
-  .cb-launcher {
-    position: fixed;
-    right: max(16px, env(safe-area-inset-right));
-    bottom: max(16px, env(safe-area-inset-bottom));
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    background: var(--cb-bg);
-    box-shadow: var(--cb-shadow);
-    z-index: var(--cb-z);
-    cursor: pointer;
-    display: grid; place-items: center;
-    border: 1px solid rgba(0,0,0,0.08);
-  }
-  .cb-launcher:focus-visible {
-    outline: 3px solid var(--cb-accent);
-    outline-offset: 2px;
-    border-radius: 50%;
-  }
-  .cb-launcher svg { width: 28px; height: 28px; }
+  <div id="cv-cbLauncher" aria-label="Open chat" role="button" tabindex="0">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 4h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-4.2 3.5a.75.75 0 0 1-1.3-.57V15H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM7 8.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm5 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm5 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z"/>
+    </svg>
+  </div>
+  <div id="cv-cbOverlay" class="cv-cb-hidden" aria-hidden="true"></div>
 
-  /* Dim background overlay when chat is open (no layout impact) */
-  .cb-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.35);
-    z-index: calc(var(--cb-z) + 1);
-  }
+  <section id="cv-cbWindow" class="cv-cb-hidden" role="dialog" aria-label="AI chat" aria-modal="true" data-state="enter">
+    <header id="cv-cbHeader">
+      <div id="cv-cbTitle">Chat with Julia’s Assistant</div>
+      <button id="cv-cbClose" aria-label="Close chat">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M6.4 6.4a1 1 0 0 1 1.4 0L12 10.6l4.2-4.2a1 1 0 0 1 1.4 1.4L13.4 12l4.2 4.2a1 1 0 1 1-1.4 1.4L12 13.4l-4.2 4.2a1 1 0 0 1-1.4-1.4L10.6 12 6.4 7.8a1 1 0 0 1 0-1.4z"/>
+        </svg>
+      </button>
+    </header>
 
-  /* Chat window container */
-  .cb-window {
-    position: fixed;
-    z-index: calc(var(--cb-z) + 2);
-    display: grid;
-    grid-template-rows: auto 1fr;
-    width: min(420px, 92vw);
-    height: min(70vh, 92vh);
-    right: max(16px, env(safe-area-inset-right));
-    bottom: max(84px, calc(env(safe-area-inset-bottom) + 84px)); /* clears where launcher was */
-    background: var(--cb-bg);
-    border-radius: var(--cb-radius);
-    box-shadow: var(--cb-shadow);
-    border: 1px solid rgba(0,0,0,0.08);
-    overflow: hidden;
-  }
+    <div id="cv-cbBody">
+      <div id="cv-cbMsgs" aria-live="polite"></div>
+      <form id="cv-cbForm">
+        <input id="cv-cbInput" type="text" placeholder="Ask about Julia’s experience, skills, availability…" required />
+        <button id="cv-cbSend" type="submit">Send</button>
+      </form>
+    </div>
+  </section>
 
-  /* Header with close button */
-  .cb-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 12px;
-    background: #f8fafc;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
-  }
-  .cb-title { font: 600 14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: #0f172a; }
-  .cb-close {
-    all: unset; cursor: pointer;
-    display: inline-grid; place-items: center;
-    width: 32px; height: 32px; border-radius: 8px;
-  }
-  .cb-close:focus-visible {
-    outline: 3px solid var(--cb-accent);
-    outline-offset: 2px;
-    border-radius: 8px;
-  }
+  <script>
+    (function () {
+      // ====== Secure Backend Integration ======
+      // API key now stored securely on server side - no longer exposed to visitors
 
-  /* Iframe fills the remaining space */
-  .cb-frame { width: 100%; height: 100%; border: 0; display: block; }
+      // ===========================================================================
 
-  /* Mobile full-screen behavior for small heights */
-  @media (max-width: 640px), (max-height: 640px) {
-    .cb-window {
-      width: 100vw;
-      height: min(100vh, 100dvh);
-      right: 0;
-      bottom: 0;
-      border-radius: 0;
-    }
-  }
+      // Accessibility + behavior
+      const d = document;
+      const launcher = d.getElementById('cv-cbLauncher');
+      const overlay  = d.getElementById('cv-cbOverlay');
+      const win      = d.getElementById('cv-cbWindow');
+      const closeBtn = d.getElementById('cv-cbClose');
 
-  /* Respect users who prefer less motion */
-  @media (prefers-reduced-motion: no-preference) {
-    .cb-window { transition: transform .2s ease, opacity .2s ease; }
-    .cb-window[data-state="enter"] { transform: translateY(8px); opacity: 0; }
-    .cb-window[data-state="open"]  { transform: translateY(0);   opacity: 1; }
-  }
-</style>
+      function openChat() {
+        launcher.classList.add('cv-cb-hidden');
+        overlay.classList.remove('cv-cb-hidden'); overlay.setAttribute('aria-hidden','false');
+        win.classList.remove('cv-cb-hidden'); win.dataset.state = 'open';
+        d.documentElement.style.overflow = 'hidden';
+        d.body.style.overflow = 'hidden';
+        setTimeout(() => { const i = d.getElementById('cv-cbInput'); if (i) i.focus(); }, 50);
+      }
 
-<div class="cb-launcher" id="cbLauncher" aria-label="Open chat" role="button" tabindex="0">
-  <!-- Simple chat bubble icon (no external assets) -->
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M4 4h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-4.2 3.5a.75.75 0 0 1-1.3-.57V15H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM7 8.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm5 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm5 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z"/>
-  </svg>
-</div>
+      function closeChat() {
+        win.classList.add('cv-cb-hidden'); win.dataset.state = 'enter';
+        overlay.classList.add('cv-cb-hidden'); overlay.setAttribute('aria-hidden','true');
+        launcher.classList.remove('cv-cb-hidden');
+        d.documentElement.style.overflow = ''; d.body.style.overflow = '';
+        launcher.focus({ preventScroll:true });
+      }
 
-<div class="cb-overlay cb-hidden" id="cbOverlay" aria-hidden="true"></div>
-
-<section class="cb-window cb-hidden" id="cbWindow" role="dialog" aria-label="AI chat" aria-modal="true" data-state="enter">
-  <header class="cb-header">
-    <div class="cb-title">Chat with Julia’s Assistant</div>
-    <button class="cb-close" id="cbClose" aria-label="Close chat">
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6.4 6.4a1 1 0 0 1 1.4 0L12 10.6l4.2-4.2a1 1 0 0 1 1.4 1.4L13.4 12l4.2 4.2a1 1 0 1 1-1.4 1.4L12 13.4l-4.2 4.2a1 1 0 0 1-1.4-1.4L10.6 12 6.4 7.8a1 1 0 0 1 0-1.4z"/></svg>
-    </button>
-  </header>
-  <iframe
-    class="cb-frame"
-    id="cbFrame"
-    title="AI chat"
-    src="https://app.chatgptbuilder.io/webchat/?p=4517266&ref=1754579564137&cl=0"
-    allow="clipboard-read; clipboard-write; microphone; camera"
-    referrerpolicy="no-referrer">
-  </iframe>
-</section>
-
-<script>
-  (function () {
-    var d = document;
-    var launcher = d.getElementById('cbLauncher');
-    var overlay  = d.getElementById('cbOverlay');
-    var win      = d.getElementById('cbWindow');
-    var closeBtn = d.getElementById('cbClose');
-
-    function openChat() {
-      launcher.classList.add('cb-hidden');              // Hide launcher so it can’t overlap the chat
-      overlay.classList.remove('cb-hidden');
-      overlay.setAttribute('aria-hidden', 'false');
-      win.classList.remove('cb-hidden');
-      win.dataset.state = 'open';
-      // Prevent background scroll on iOS without affecting layout height
-      d.documentElement.style.overflow = 'hidden';
-      d.body.style.overflow = 'hidden';
-    }
-
-    function closeChat() {
-      win.classList.add('cb-hidden');
-      win.dataset.state = 'enter';
-      overlay.classList.add('cb-hidden');
-      overlay.setAttribute('aria-hidden', 'true');
-      launcher.classList.remove('cb-hidden');
-      d.documentElement.style.overflow = '';
-      d.body.style.overflow = '';
-      launcher.focus({ preventScroll: true });
-    }
-
-    function trapFocus(e) {
-      if (!win.classList.contains('cb-hidden')) {
-        var isTab = (e.key === 'Tab' || e.keyCode === 9);
-        var isEsc = (e.key === 'Escape' || e.keyCode === 27);
-        if (isEsc) { e.preventDefault(); closeChat(); return; }
-        if (isTab) {
-          // basic focus trap
-          var focusables = win.querySelectorAll('button, [href], iframe, [tabindex]:not([tabindex="-1"])');
-          focusables = Array.prototype.slice.call(focusables).filter(function(el){ return !el.hasAttribute('disabled'); });
-          if (focusables.length) {
-            var first = focusables[0], last = focusables[focusables.length - 1];
-            if (e.shiftKey && d.activeElement === first) { e.preventDefault(); last.focus(); }
-            else if (!e.shiftKey && d.activeElement === last) { e.preventDefault(); first.focus(); }
+      function trapFocus(e) {
+        if (!win.classList.contains('cv-cb-hidden')) {
+          const isTab = (e.key === 'Tab' || e.keyCode === 9);
+          const isEsc = (e.key === 'Escape' || e.keyCode === 27);
+          if (isEsc) { e.preventDefault(); closeChat(); return; }
+          if (isTab) {
+            let focusables = win.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
+            focusables = Array.prototype.slice.call(focusables).filter(el => !el.hasAttribute('disabled'));
+            if (focusables.length) {
+              const first = focusables[0], last = focusables[focusables.length - 1];
+              if (e.shiftKey && d.activeElement === first) { e.preventDefault(); last.focus(); }
+              else if (!e.shiftKey && d.activeElement === last) { e.preventDefault(); first.focus(); }
+            }
           }
         }
       }
+
+      launcher.addEventListener('click', openChat);
+      launcher.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openChat();
+        }
+      });
+      closeBtn.addEventListener('click', closeChat);
+      overlay.addEventListener('click', closeChat);
+      d.addEventListener('keydown', trapFocus, true);
+
+      // ====== Chat logic (secure backend API) ======
+      const msgsEl  = d.getElementById('cv-cbMsgs');
+      const formEl  = d.getElementById('cv-cbForm');
+      const inputEl = d.getElementById('cv-cbInput');
+      const sendBtn = d.getElementById('cv-cbSend');
+
+      // System prompt (concise CV summary)
+      const SYSTEM_PROMPT = `You are Julia Baucher’s AI assistant for recruiters.
+Speak as Julia: professional, concise, friendly. Offer links or details if helpful.
+Key facts:
+- Senior BI Product Manager (Amazon, 2021–2025): logistics optimization webapps, forecasting ML, BI dashboards; roadmap, UX, sprints, KPIs. SCRUM training (4.8/5).
+- Product Manager & Consultant (Amadeus, 2013–2020): Airline Revenue Accounting; on-site consulting (Malaysia Airlines, Vistara, Icelandair, Luxair, Widerøe); pre-sales.
+- Earlier: e-commerce product; research at University of Cambridge; data analyst at McKinsey.
+Education: PhD École des Mines de Paris. Languages: RU native; FR/EN fluent; ES basic.
+Answer in the user’s language when possible. If unsure, ask a clarifying question first.`;
+
+      const history = [{ role: 'system', content: SYSTEM_PROMPT }];
+
+      function addBubble(role, text) {
+        const wrap = d.createElement('div');
+        wrap.className = `cv-cb-bubble ${role}`;
+        const b = d.createElement('div');
+        b.className = 'b';
+        b.textContent = text;
+        wrap.appendChild(b);
+        msgsEl.appendChild(wrap);
+        msgsEl.scrollTop = msgsEl.scrollHeight;
+      }
+
+      // Greet once chat opens
+      let greeted = false;
+      function greetIfNeeded() {
+        if (!greeted) {
+          addBubble('assistant', 'Hi! I’m Julia’s AI assistant. How can I help?');
+          greeted = true;
+        }
+      }
+
+      launcher.addEventListener('click', greetIfNeeded);
+      launcher.addEventListener('keydown', e => {
+        if ((e.key === 'Enter' || e.key === ' ') && !greeted) {
+          greetIfNeeded();
+        }
+      });
+
+      formEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userText = inputEl.value.trim();
+        if (!userText) return;
+
+        addBubble('user', userText);
+        history.push({ role: 'user', content: userText });
+        inputEl.value = '';
+        inputEl.disabled = true;
+        sendBtn.disabled = true;
+
+        try {
+          const r = await fetch('https://by02teld6l.execute-api.eu-central-1.amazonaws.com/prod/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              message: userText
+            })
+          });
+
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.error || 'Request failed');
+          const reply = data.reply || '(No reply)';
+          addBubble('assistant', reply);
+          history.push({ role: 'assistant', content: reply });
+        } catch (err) {
+          console.error(err);
+          addBubble('assistant', 'Sorry—there was an error. Please try again.');
+        } finally {
+          inputEl.disabled = false;
+          sendBtn.disabled = false;
+          inputEl.focus();
+        }
+      });
+    })();
+  </script>
+
+  <script>
+    // Cap to N calls per day (per browser). Change N as you like.
+    const DAILY_CAP = 2;
+
+    function canMakeCall() {
+      const today = new Date().toISOString().slice(0,10);
+      const store = JSON.parse(localStorage.getItem('ai-usage') || '{}');
+      const rec = store[today] || { count: 0 };
+      return rec.count < DAILY_CAP;
     }
 
-    launcher.addEventListener('click', openChat);
-    launcher.addEventListener('keydown', function(e){
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openChat(); }
-    });
-    closeBtn.addEventListener('click', closeChat);
-    overlay.addEventListener('click', closeChat);
-    d.addEventListener('keydown', trapFocus, true);
+    function recordCall() {
+      const today = new Date().toISOString().slice(0,10);
+      const store = JSON.parse(localStorage.getItem('ai-usage') || '{}');
+      const rec = store[today] || { count: 0 };
+      rec.count += 1;
+      store[today] = rec;
+      localStorage.setItem('ai-usage', JSON.stringify(store));
+    }
 
-    // Guard: don’t create extra layout height — everything is fixed-position.
-    // No-op here by design.
-  })();
-</script>
-<!-- End Chatbot Integration -->
-
-  
-  
+    async function callOpenAI(payload) {
+      if (!canMakeCall()) {
+        throw new Error(`Daily limit reached (${DAILY_CAP} calls). Try again tomorrow.`);
+      }
+      recordCall();
+      // ... proceed with your fetch to OpenAI here ...
+    }
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
